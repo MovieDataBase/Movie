@@ -1,0 +1,25 @@
+<c3p0-config>
+
+	<default-config>
+		<property name="driverClass">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+		<property name="jdbcUrl">jdbc:sqlserver://xxx.xxx.xxx.xxx:xxxx;databaseName=Movie</property>
+		<property name="user">xxx</property>
+		<property name="password">xxx</property>
+		
+		<property name="acquireIncrement">5</property>
+		<property name="intialPoolsize">10</property>
+		<property name="maxPoolsize">20</property>
+	</default-config>
+	
+	<named-config>
+		<property name="driverClass">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+		<property name="jdbcUrl">jdbc:sqlserver://xxx.xxx.xxx.xxx:xxxx;databaseName=Movie</property>
+		<property name="user">xxx</property>
+		<property name="password">xxx</property>
+		
+		<property name="acquireIncrement">5</property>
+		<property name="intialPoolsize">10</property>
+		<property name="maxPoolsize">20</property>
+	</named-config>
+	
+</c3p0-config>
