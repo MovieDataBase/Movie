@@ -2,15 +2,15 @@ package Bean;
 
 public class User {
 	
-	private String userid;
+	private int userid;
 	private String username;
 	private String password;
 	private String email;
 	
-	public String getUserid() {
+	public int getUserid() {
 		return userid;
 	}
-	public void setUserid(String userid) {
+	public void setUserid(int userid) {
 		this.userid = userid;
 	}
 	public String getUsername() {
