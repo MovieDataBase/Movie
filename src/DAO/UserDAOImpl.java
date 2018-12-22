@@ -119,9 +119,6 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 			pstmt = conn.prepareStatement(GET_USER_SQL);
 			pstmt.setString(0, name);
 			rs = pstmt.executeQuery(GET_USER_SQL);
-			if(rs.next() == false) {
-				return null;
-			}
 			while(rs.next()) {
 				User u = new User();
 				u.setUserid(rs.getInt("userid"));
