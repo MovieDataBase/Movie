@@ -3,7 +3,7 @@ package Bean;
 import java.sql.Date;
 
 public class Director {
-	
+	private int directorid;
 	private String name;
 	private String sex;
 	private Date birthday;
@@ -32,6 +32,12 @@ public class Director {
 	}
 	public void setProfile(String profile) {
 		this.profile = profile;
+	}
+	public int getDirectorid() {
+		return directorid;
+	}
+	public void setDirectorid(int directorid) {
+		this.directorid = directorid;
 	}
 	
 }
