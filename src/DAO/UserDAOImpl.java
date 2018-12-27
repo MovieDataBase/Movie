@@ -51,7 +51,7 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 		}
 	}
 
-	public static final String UPDATE_USER_SQL = "UPDATE user SET username = ?, password = ?, email = ?, "
+	public static final String UPDATE_USER_SQL = "UPDATE user SET username = ?, password = ?, email = ? "
 			+ "WHERE userid = ?;";
 	@Override
 	public void updataUser(User u) throws DAOException {
@@ -74,7 +74,7 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 		
 	}
 
-	public static final String GET_USER_SQL = "SELECT username, password, email"
+	public static final String GET_USER_SQL = "SELECT username, password, email "
 			+ "FROM user, WHERE userid = ?;";
 	@Override
 	public User getUser(int id) throws DAOException {
@@ -105,20 +105,19 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 	}
 
 	// Search for users who's name include ?
-	public static final String SEARCH_USER_SQL = "SELECT userid, username, password, email"
+	public static final String SEARCH_USER_SQL = "SELECT userid, username, password, email "
 			+ "FROM user, WHERE username = %?%;";
 	@Override
 	public List<User> searchUser(String name) throws DAOException {
-
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		List<User> userlist = new ArrayList<User>();
 		try {
 			conn = getConnection();
-			pstmt = conn.prepareStatement(GET_USER_SQL);
+			pstmt = conn.prepareStatement(SEARCH_USER_SQL);
 			pstmt.setString(0, name);
-			rs = pstmt.executeQuery(GET_USER_SQL);
+			rs = pstmt.executeQuery(SEARCH_USER_SQL);
 			while(rs.next()) {
 				User u = new User();
 				u.setUserid(rs.getInt("userid"));
@@ -128,7 +127,6 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 				userlist.add(u);
 			}
 			return userlist;
-			
 		} catch(SQLException e) {
 			e.printStackTrace();
 		} finally {
