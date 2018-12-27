@@ -7,6 +7,7 @@ public class Director {
 	private String name;
 	private String sex;
 	private Date birthday;
+	private String birthplace;
 	private String profile;
 	
 	public String getName() {
@@ -38,6 +39,12 @@ public class Director {
 	}
 	public void setDirectorid(int directorid) {
 		this.directorid = directorid;
+	}
+	public String getBirthplace() {
+		return birthplace;
+	}
+	public void setBirthplace(String birthplace) {
+		this.birthplace = birthplace;
 	}
 	
 }
