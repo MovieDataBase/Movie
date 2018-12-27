@@ -13,23 +13,28 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 	
 	public static final String ADD_USER_SQL = "INSERT INTO user VALUES (?, ?, ?, ?);";
 	@Override
-	public void addUser(User u) throws DAOException {
+	public int addUser(User u) throws DAOException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(ADD_USER_SQL);
-			pstmt.setInt(0, u.getUserid());
-			pstmt.setString(1, u.getUsername());
-			pstmt.setString(2, u.getPassword());
-			pstmt.setString(3, u.getEmail());
+			pstmt.setInt(1, u.getUserid());
+			pstmt.setString(2, u.getUsername());
+			pstmt.setString(3, u.getPassword());
+			pstmt.setString(4, u.getEmail());
 			pstmt.executeQuery(ADD_USER_SQL);
+			pstmt = conn.prepareStatement("select @@IDENTITY");
+			ResultSet i = pstmt.executeQuery();
+			if(i.next())
+				return i.getInt(1);
 			
 		} catch(SQLException e) {
 			e.printStackTrace();
 		} finally {
 			C3P0JdbcUtil.release(conn, pstmt, null);
 		}
+		return -1;
 	}
 
 	
@@ -41,7 +46,7 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(DELETE_USER_SQL);
-			pstmt.setInt(0, id);
+			pstmt.setInt(1, id);
 			pstmt.executeQuery(DELETE_USER_SQL);
 			
 		} catch(SQLException e) {
@@ -60,10 +65,10 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(UPDATE_USER_SQL);
-			pstmt.setString(0, u.getPassword());
 			pstmt.setString(1, u.getPassword());
-			pstmt.setString(2, u.getEmail());
-			pstmt.setInt(3, u.getUserid());
+			pstmt.setString(2, u.getPassword());
+			pstmt.setString(3, u.getEmail());
+			pstmt.setInt(4, u.getUserid());
 			pstmt.executeUpdate(UPDATE_USER_SQL);
 			
 		} catch(SQLException e) {
@@ -85,7 +90,7 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(GET_USER_SQL);
-			pstmt.setInt(0, id);
+			pstmt.setInt(1, id);
 			rs = pstmt.executeQuery(GET_USER_SQL);
 			while(rs.next()) {
 				u.setUserid(id);
@@ -98,7 +103,7 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 		} catch(SQLException e) {
 			e.printStackTrace();
 		} finally {
-			C3P0JdbcUtil.release(conn, pstmt, null);
+			C3P0JdbcUtil.release(conn, pstmt, rs);
 		}
 		
 		return null;
@@ -116,7 +121,7 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(SEARCH_USER_SQL);
-			pstmt.setString(0, name);
+			pstmt.setString(1, name);
 			rs = pstmt.executeQuery(SEARCH_USER_SQL);
 			while(rs.next()) {
 				User u = new User();
@@ -130,10 +135,31 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 		} catch(SQLException e) {
 			e.printStackTrace();
 		} finally {
-			C3P0JdbcUtil.release(conn, pstmt, null);
+			C3P0JdbcUtil.release(conn, pstmt, rs);
 		}
 		
 		return null;
+	}
+	
+	
+	public static final String LIKE_COMMENT_SQL = "INSERT INTO like VALUES(?, ?);";
+	@Override
+	public void likeComment(int userid, int commentid) throws DAOException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(LIKE_COMMENT_SQL);
+			pstmt.setInt(1, userid);
+			pstmt.setInt(2, commentid);
+			pstmt.executeQuery();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			C3P0JdbcUtil.release(conn, pstmt, null);
+		}
+		
+		
 	}
 	
 
