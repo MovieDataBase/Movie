@@ -3,28 +3,29 @@ import java.sql.Date;
 
 public class Comment {
 	
-	private String commentid;
-	private String userid;
-	private String movieid;
+	private int commentid;
+	private int userid;
+	private int movieid;
 	private String text;
 	private Date time;
 	private int score;
-	public String getCommentid() {
+	
+	public int getCommentid() {
 		return commentid;
 	}
-	public void setCommentid(String commentid) {
+	public void setCommentid(int commentid) {
 		this.commentid = commentid;
 	}
-	public String getUserid() {
+	public int getUserid() {
 		return userid;
 	}
-	public void setUserid(String userid) {
+	public void setUserid(int userid) {
 		this.userid = userid;
 	}
-	public String getMovieid() {
+	public int getMovieid() {
 		return movieid;
 	}
-	public void setMovieid(String movieid) {
+	public void setMovieid(int movieid) {
 		this.movieid = movieid;
 	}
 	public String getText() {
@@ -45,5 +46,6 @@ public class Comment {
 	public void setScore(int score) {
 		this.score = score;
 	}
+	
 	
 }
