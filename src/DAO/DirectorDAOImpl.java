@@ -155,9 +155,9 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 		List<Director> directorlist = new ArrayList<Director>();
 		try {
 			conn = getConnection();
-			pstmt = conn.prepareStatement(SEARCH_DIRECTOR_SQL);
+			pstmt = conn.prepareStatement(GET_DIRECTOR_BYMOVIE_SQL);
 			pstmt.setInt(1, movieid);
-			rs = pstmt.executeQuery(SEARCH_DIRECTOR_SQL);
+			rs = pstmt.executeQuery(GET_DIRECTOR_BYMOVIE_SQL);
 			while(rs.next()) {
 				Director d = new Director();
 				d.setDirectorid(rs.getInt("directorid"));
