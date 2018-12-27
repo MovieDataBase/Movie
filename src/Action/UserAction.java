@@ -5,53 +5,61 @@ import java.util.List;
 
 public class UserAction {
 	
-	public int register(User u) throws DAOException {
+		public void register(User u) throws DAOException {
 		UserDAOImpl uImpl = new UserDAOImpl();
-		return uImpl.addUser(u);
+		int id = uImpl.addUser(u);
+		if(id == -1)
+			System.out.println("ç”¨æˆ·åå·²ç»å­˜åœ¨");
+		else
+			System.out.println("æ³¨å†ŒæˆåŠŸï¼Œç”¨æˆ·ID: " + id);
 	}
 	
-	public boolean login(int id, String password) throws DAOException {
+	public int login(int id, String password) throws DAOException {
 		UserDAOImpl uImpl = new UserDAOImpl();
-		if(password.equals(uImpl.getUser(id).getPassword()))
-			return true;
-		return false;
+		if(password.equals(uImpl.getUser(id).getPassword())) {
+			System.out.println("ç™»å½•æˆåŠŸ");
+			return id;
+		}
+		else
+			System.out.println("å¯†ç é”™è¯¯ï¼Œç™»å½•å¤±è´¥");
+		return -1;
 	}
 	
-	public boolean like_comment(int userid, int commentid) throws DAOException {
+	public void like_comment(int userid, int commentid) throws DAOException {
 		UserDAOImpl uImpl = new UserDAOImpl();
 		uImpl.likeComment(userid, commentid);
-		return true;
+		System.out.println("ç‚¹èµæˆåŠŸ");
 	}
 	
-	// ä¯ÀÀµçÓ°ĞÅÏ¢
+	// æµè§ˆç”µå½±ä¿¡æ¯
 	public void Browse(int userid, int movieid) throws DAOException {
 		
 		MovieDAOImpl movieimpl = new MovieDAOImpl();
 		DirectorDAOImpl directorimpl = new DirectorDAOImpl();
 		BrouseDAOImpl browseimpl = new BrouseDAOImpl();
 		
-		// »ñÈ¡µçÓ°ĞÅÏ¢ºÍµ¼Ñİ
+		// è·å–ç”µå½±ä¿¡æ¯å’Œå¯¼æ¼”
 		Movie movie = movieimpl.getMovie(movieid);
 		List<Director> director = directorimpl.getDirector_byMovie(movieid);
 		
-		// ÏÔÊ¾µçÓ°ĞÅÏ¢	
-		System.out.println("µçÓ°Ãû£º" + movie.getMoviename());
-		System.out.print("µ¼Ñİ£º");
+		// æ˜¾ç¤ºç”µå½±ä¿¡æ¯	
+		System.out.println("ç”µå½±åï¼š" + movie.getMoviename());
+		System.out.print("å¯¼æ¼”ï¼š");
 		for(int i = 0 ; i < director.size() ; i++) {
-			if(i != 0) System.out.print("¡¢");
+			if(i != 0) System.out.print("ã€");
 		    System.out.print(director.get(i).getName());
 		}
 		System.out.println();
-		System.out.println("±à¾ç£º" + movie.getScreenwriter());
-		System.out.println("Ö÷Ñİ£º" + movie.getActor());
-		System.out.println("ÀàĞÍ£º" + movie.getType());
-		System.out.println("ÖÆÆ¬¹ú¼Ò/µØÇø£º" + movie.getCountry());
-		System.out.println("ÓïÑÔ£º" + movie.getLanguage());
-		System.out.println("ÉÏÓ³ÈÕÆÚ£º" + movie.getReleasetime());
-		System.out.println("Æ¬³¤£º" + movie.getDuration() + "·ÖÖÓ");
-		System.out.println("¾çÇé¼ò½é£º" + movie.getIntroduction());
+		System.out.println("ç¼–å‰§ï¼š" + movie.getScreenwriter());
+		System.out.println("ä¸»æ¼”ï¼š" + movie.getActor());
+		System.out.println("ç±»å‹ï¼š" + movie.getType());
+		System.out.println("åˆ¶ç‰‡å›½å®¶/åœ°åŒºï¼š" + movie.getCountry());
+		System.out.println("è¯­è¨€ï¼š" + movie.getLanguage());
+		System.out.println("ä¸Šæ˜ æ—¥æœŸï¼š" + movie.getReleasetime());
+		System.out.println("ç‰‡é•¿ï¼š" + movie.getDuration() + "åˆ†é’Ÿ");
+		System.out.println("å‰§æƒ…ç®€ä»‹ï¼š" + movie.getIntroduction());
 		
-		// Ìí¼Óä¯ÀÀ¼ÇÂ¼
+		// æ·»åŠ æµè§ˆè®°å½•
 		Brouse browse = new Brouse();
 		browse.setMovieid(movieid);
 		browse.setUserid(userid);
@@ -60,18 +68,18 @@ public class UserAction {
 		
 	}
 	
-	// ä¯ÀÀÀúÊ·
+	// æµè§ˆå†å²
 	public void BrowseList(int userid) throws DAOException {
 		
 		BrouseDAOImpl browseimpl = new BrouseDAOImpl();
 		MovieDAOImpl movieimpl = new MovieDAOImpl();
 		UserDAOImpl userimpl = new UserDAOImpl();
 		
-		// ÏÔÊ¾
-		System.out.println(userimpl.getUser(userid).getUsername() + " µÄä¯ÀÀ¼ÇÂ¼£º");
+		// æ˜¾ç¤º
+		System.out.println(userimpl.getUser(userid).getUsername() + " çš„æµè§ˆè®°å½•ï¼š");
 		List<Brouse> browse = browseimpl.Search(userid);
 		for(int i = 0; i < browse.size(); i++) {
-			System.out.println("ä¯ÀÀµçÓ°£º" + movieimpl.getMovie(browse.get(i).getMovieid()).getMoviename() + "    ä¯ÀÀÊ±¼ä£º" + browse.get(i).getBrousetime());
+			System.out.println("æµè§ˆç”µå½±ï¼š" + movieimpl.getMovie(browse.get(i).getMovieid()).getMoviename() + "    æµè§ˆæ—¶é—´ï¼š" + browse.get(i).getBrousetime());
 		}
 		
 	}
