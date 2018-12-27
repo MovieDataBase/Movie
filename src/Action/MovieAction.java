@@ -21,4 +21,21 @@ public class MovieAction {
 			}
 		}
 	}
+	
+	public void search_movie_by_type(String type) throws DAOException {
+		MovieDAOImpl mImpl = new MovieDAOImpl();
+		List<Movie> mlist;
+		mlist = mImpl.Search_byType(type);
+		if(mlist.size() == 0)
+			System.out.println("无该类型的电影");
+		else {
+			System.out.println(type + "类电影包括: ");
+			Iterator<Movie> it = mlist.iterator();
+			while(it.hasNext()) {
+				System.out.print("电影名: " + it.next().getMoviename() + " ");
+				System.out.println("类别: " + it.next().getType());
+			}
+		}
+	}
+	
 }
