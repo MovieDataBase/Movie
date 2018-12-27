@@ -8,6 +8,6 @@ public interface CommentDAO {
 	public void updateComment(Comment m) throws DAOException;
 	public Comment getComment(int commentid) throws DAOException;
 	public void deleteComment(int commentid) throws DAOException;
-	public List<Comment> Search(String name) throws DAOException;
+	public List<Comment> Search(int commentid) throws DAOException;
 	
 }
