@@ -20,12 +20,12 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(ADD_DIRECTOR_SQL);
-			pstmt.setInt(0, dir.getDirectorid());
-			pstmt.setString(1, dir.getName());
-			pstmt.setString(2, dir.getSex());
-			pstmt.setDate(3, dir.getBirthday());
-			pstmt.setString(4, dir.getBirthplace());
-			pstmt.setString(5, dir.getProfile());
+			pstmt.setInt(1, dir.getDirectorid());
+			pstmt.setString(2, dir.getName());
+			pstmt.setString(3, dir.getSex());
+			pstmt.setDate(4, dir.getBirthday());
+			pstmt.setString(5, dir.getBirthplace());
+			pstmt.setString(6, dir.getProfile());
 			pstmt.executeQuery(ADD_DIRECTOR_SQL);
 			
 		} catch(SQLException e) {
@@ -44,7 +44,7 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(DELETE_DIRECTOR_SQL);
-			pstmt.setInt(0, id);
+			pstmt.setInt(1, id);
 			pstmt.executeQuery(DELETE_DIRECTOR_SQL);
 			
 		} catch(SQLException e) {
@@ -64,11 +64,11 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(UPDATE_DIRECTOR_SQL);
-			pstmt.setString(0, dir.getName());
-			pstmt.setString(1, dir.getSex());
-			pstmt.setDate(2, dir.getBirthday());
-			pstmt.setString(3, dir.getBirthplace());
-			pstmt.setString(4, dir.getProfile());
+			pstmt.setString(1, dir.getName());
+			pstmt.setString(2, dir.getSex());
+			pstmt.setDate(3, dir.getBirthday());
+			pstmt.setString(4, dir.getBirthplace());
+			pstmt.setString(5, dir.getProfile());
 			pstmt.executeUpdate(UPDATE_DIRECTOR_SQL);
 			
 		} catch(SQLException e) {
@@ -82,7 +82,7 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 	public static final String GET_USER_SQL = "SELECT name, sex, birthday, birthday, birthplace, profile "
 			+ "FROM director, WHERE directorid = ?;";
 	@Override
-	public Director getDirector(int id) throws DAOException {
+	public Director getDirector_byId(int id) throws DAOException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -90,7 +90,7 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(GET_USER_SQL);
-			pstmt.setInt(0, id);
+			pstmt.setInt(1, id);
 			rs = pstmt.executeQuery(GET_USER_SQL);
 			while(rs.next()) {
 				d.setDirectorid(id);
@@ -105,7 +105,7 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 		} catch(SQLException e) {
 			e.printStackTrace();
 		} finally {
-			C3P0JdbcUtil.release(conn, pstmt, null);
+			C3P0JdbcUtil.release(conn, pstmt, rs);
 		}
 		
 		return null;
@@ -122,7 +122,7 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(SEARCH_DIRECTOR_SQL);
-			pstmt.setString(0, name);
+			pstmt.setString(1, name);
 			rs = pstmt.executeQuery(SEARCH_DIRECTOR_SQL);
 			while(rs.next()) {
 				Director d = new Director();
@@ -139,11 +139,47 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 		} catch(SQLException e) {
 			e.printStackTrace();
 		} finally {
-			C3P0JdbcUtil.release(conn, pstmt, null);
+			C3P0JdbcUtil.release(conn, pstmt, rs);
 		}
 		
 		return null;
 	}
+	
+	
+	public static final String GET_DIRECTOR_BYMOVIE_SQL = "SELECT director.directorid, name, sex, birthday, birthplace, profile FROM director, direct WHERE movieid=(?) AND director.directorid = direct.directorid ";
+	@Override
+	public List<Director> getDirector_byMovie(int movieid) throws DAOException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<Director> directorlist = new ArrayList<Director>();
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(SEARCH_DIRECTOR_SQL);
+			pstmt.setInt(1, movieid);
+			rs = pstmt.executeQuery(SEARCH_DIRECTOR_SQL);
+			while(rs.next()) {
+				Director d = new Director();
+				d.setDirectorid(rs.getInt("directorid"));
+				d.setName(rs.getString("name"));
+				d.setSex(rs.getString("sex"));
+				d.setBirthday(rs.getDate("birthday"));
+				d.setBirthplace(rs.getString("birthplace"));
+				d.setProfile(rs.getString("profile"));
+				directorlist.add(d);
+			}
+			return directorlist;
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			C3P0JdbcUtil.release(conn, pstmt, rs);
+		}
+		
+		
+		return null;
+	}
+
 
 
 	
