@@ -26,7 +26,7 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 			pstmt.setDate(4, dir.getBirthday());
 			pstmt.setString(5, dir.getBirthplace());
 			pstmt.setString(6, dir.getProfile());
-			pstmt.executeQuery(ADD_DIRECTOR_SQL);
+			pstmt.executeQuery();
 			
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -45,7 +45,7 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 			conn = getConnection();
 			pstmt = conn.prepareStatement(DELETE_DIRECTOR_SQL);
 			pstmt.setInt(1, id);
-			pstmt.executeQuery(DELETE_DIRECTOR_SQL);
+			pstmt.executeQuery();
 			
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -69,7 +69,7 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 			pstmt.setDate(3, dir.getBirthday());
 			pstmt.setString(4, dir.getBirthplace());
 			pstmt.setString(5, dir.getProfile());
-			pstmt.executeUpdate(UPDATE_DIRECTOR_SQL);
+			pstmt.executeUpdate();
 			
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -91,7 +91,7 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 			conn = getConnection();
 			pstmt = conn.prepareStatement(GET_USER_SQL);
 			pstmt.setInt(1, id);
-			rs = pstmt.executeQuery(GET_USER_SQL);
+			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				d.setDirectorid(id);
 				d.setName(rs.getString("name"));
@@ -123,7 +123,7 @@ public class DirectorDAOImpl extends DAOBase implements DirectorDAO{
 			conn = getConnection();
 			pstmt = conn.prepareStatement(SEARCH_DIRECTOR_SQL);
 			pstmt.setString(1, name);
-			rs = pstmt.executeQuery(SEARCH_DIRECTOR_SQL);
+			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				Director d = new Director();
 				d.setDirectorid(rs.getInt("id"));
