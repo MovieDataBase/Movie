@@ -49,7 +49,7 @@ public class CommentDAOImpl extends DAOBase implements CommentDAO{
 		return false;
 	}
 	@Override
-	public boolean updateComment(Comment m) throws DAOException {
+	public void updateComment(Comment m) throws DAOException {
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -65,13 +65,12 @@ public class CommentDAOImpl extends DAOBase implements CommentDAO{
 			pstmt.setInt(6, m.getMovieid());
 
 			pstmt.executeUpdate();
-			return true;
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally{
 			C3P0JdbcUtil.release(conn, pstmt, null);
 		}
-		return false;
+		
 	}
 	@Override
 	public Comment getComment(int commentid) throws DAOException {
@@ -104,7 +103,7 @@ public class CommentDAOImpl extends DAOBase implements CommentDAO{
 		return null;
 	}
 	@Override
-	public boolean deleteComment(int commentid) throws DAOException {
+	public void deleteComment(int commentid) throws DAOException {
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -113,13 +112,13 @@ public class CommentDAOImpl extends DAOBase implements CommentDAO{
 			pstmt = conn.prepareStatement(DELETE_COMMENT_SQL);
 			pstmt.setInt(1, commentid);
 			pstmt.executeUpdate();
-			return true;
+			
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally{
 			C3P0JdbcUtil.release(conn, pstmt, null);
 		}
-		return false;
+		
 	}
 	@Override
 	public List<Comment> Search(int movieid) throws DAOException {
