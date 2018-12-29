@@ -15,6 +15,39 @@ public class Movie {
 	private int duration;
 	private String introduction;
 	
+	public Movie(){}
+	
+	public Movie(String moviename, String screenwriter, String actor,
+			String type, String country, String language, Date releasetime,
+			int duration, String introduction) {
+		super();
+		this.moviename = moviename;
+		this.screenwriter = screenwriter;
+		this.actor = actor;
+		this.type = type;
+		this.country = country;
+		this.language = language;
+		this.releasetime = releasetime;
+		this.duration = duration;
+		this.introduction = introduction;
+	}
+
+	public Movie(int movieid, String moviename, String screenwriter,
+			String actor, String type, String country, String language,
+			Date releasetime, int duration, String introduction) {
+		super();
+		this.movieid = movieid;
+		this.moviename = moviename;
+		this.screenwriter = screenwriter;
+		this.actor = actor;
+		this.type = type;
+		this.country = country;
+		this.language = language;
+		this.releasetime = releasetime;
+		this.duration = duration;
+		this.introduction = introduction;
+	}
+
 	public int getMovieid() {
 		return movieid;
 	}
