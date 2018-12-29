@@ -47,6 +47,20 @@ if exists (select 1
    drop table "user"
 go
 
+if exists (select 1
+   from  sysobjects where type = 'D'
+   and name = 'time'
+   )
+   drop default time
+go
+
+/*==============================================================*/
+/* Default: time                                                */
+/*==============================================================*/
+create default time
+    as
+go
+
 /*==============================================================*/
 /* Table: "browse"                                              */
 /*==============================================================*/
@@ -54,7 +68,7 @@ create table "browse" (
    browseid             int                  identity,
    userid               int                  not null,
    movieid              int                  not null,
-   broustime            datetime             not null default getdate(),
+   browsetime           datetime             not null default getdate(),
    constraint PK_BROWSE primary key nonclustered (browseid)
 )
 go
