@@ -11,7 +11,7 @@ import Bean.User;
 
 public class UserDAOImpl extends DAOBase implements UserDAO{
 	
-	public static final String ADD_USER_SQL = "INSERT INTO [user] VALUES (?, ?, ?, ?);";
+	public static final String ADD_USER_SQL = "INSERT INTO [user](username, password, email) VALUES (?, ?, ?);";
 	@Override
 	public int addUser(User u) throws DAOException {
 		Connection conn = null;
@@ -19,11 +19,10 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 		try {
 			conn = getConnection();
 			pstmt = conn.prepareStatement(ADD_USER_SQL);
-			pstmt.setInt(1, u.getUserid());
-			pstmt.setString(2, u.getUsername());
-			pstmt.setString(3, u.getPassword());
-			pstmt.setString(4, u.getEmail());
-			pstmt.executeQuery();
+			pstmt.setString(1, u.getUsername());
+			pstmt.setString(2, u.getPassword());
+			pstmt.setString(3, u.getEmail());
+			pstmt.executeUpdate();
 			pstmt = conn.prepareStatement("select @@IDENTITY");
 			ResultSet i = pstmt.executeQuery();
 			if(i.next())
@@ -47,7 +46,7 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 			conn = getConnection();
 			pstmt = conn.prepareStatement(DELETE_USER_SQL);
 			pstmt.setInt(1, id);
-			pstmt.executeQuery();
+			pstmt.executeUpdate();
 			
 		} catch(SQLException e) {
 			e.printStackTrace();
@@ -80,7 +79,7 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 	}
 
 	public static final String GET_USER_SQL = "SELECT username, password, email "
-			+ "FROM [user], WHERE userid = ?;";
+			+ "FROM [user] WHERE userid = ?;";
 	@Override
 	public User getUser(int id) throws DAOException {
 		Connection conn = null;
@@ -144,7 +143,7 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 	
 	public static final String LIKE_COMMENT_SQL = "INSERT INTO [like] VALUES(?, ?);";
 	@Override
-	public void likeComment(int userid, int commentid) throws DAOException {
+	public boolean likeComment(int userid, int commentid) throws DAOException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		try {
@@ -152,15 +151,16 @@ public class UserDAOImpl extends DAOBase implements UserDAO{
 			pstmt = conn.prepareStatement(LIKE_COMMENT_SQL);
 			pstmt.setInt(1, userid);
 			pstmt.setInt(2, commentid);
-			pstmt.executeQuery();
+			pstmt.executeUpdate();
+			return true;
 		} catch(SQLException e) {
 			e.printStackTrace();
 		} finally {
 			C3P0JdbcUtil.release(conn, pstmt, null);
+			
 		}
-		
-		
+		return false;
 	}
 	
-
+	
 }

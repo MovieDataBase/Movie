@@ -10,5 +10,5 @@ public interface UserDAO {
 	public void updataUser(User u) throws DAOException;
 	public User getUser(int id) throws DAOException;
 	public List<User> searchUser(String name) throws DAOException;
-	public void likeComment(int userid, int commentid) throws DAOException;
+	public boolean likeComment(int userid, int commentid) throws DAOException;
 }

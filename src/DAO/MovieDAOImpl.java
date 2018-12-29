@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Bean.Director;
 import Bean.Movie;
 
 public class MovieDAOImpl extends DAOBase implements MovieDAO{
@@ -15,54 +16,19 @@ public class MovieDAOImpl extends DAOBase implements MovieDAO{
 			"INSERT INTO movie( moviename,screenwriter,actor,type, country, "
 			+ "language, releasetime, duration, introduction) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 	private static final String UPDATE_MOVIE_SQL =
-			"update Movie set moviename=?,screenwriter=?,actor=?,type=?, country=?, "
+			"update movie set moviename=?,screenwriter=?,actor=?,type=?, country=?, "
 			+ "language=?, releasetime=?, duration=?, introduction=? where movieid=?";
 	private static final String GET_MOVIE_SQL = 
-			"select * from Movie where movieid=?";
+			"select * from movie where movieid=?";
 	private static final String DELETE_MOVIE_SQL = 
-			"delete from Movie where movieid=?";
+			"delete from movie where movieid=?";
 	private static final String SEARCH_MOVIE_SQL = 
-			"select * from Movie where moviename like ?";
+			"select * from movie where moviename like ?";
 	private static final String GET_MOVIE_BYDIRECTOR_SQL =
 			"SELECT * FROM movie, direct WHERE movie.movieid = direct.movieid AND directorid = (?)";
 	private static final String SEARCH_MOVIE_BYTYPE_SQL =
 			"select * from movie where movie.type like ?";
 	
-	@Override
-	public List<Movie> getMovie_byDirector(int directorid) throws DAOException {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		List<Movie> movielist = new ArrayList<Movie>();
-		try {
-			conn = getConnection();
-			pstmt = conn.prepareStatement(GET_MOVIE_BYDIRECTOR_SQL);
-			pstmt.setInt(1, directorid);
-			rs = pstmt.executeQuery(GET_MOVIE_BYDIRECTOR_SQL);
-			while(rs.next()) {
-				Movie movie = new Movie();
-				movie.setMovieid(rs.getInt("movieid"));
-				movie.setMoviename(rs.getString("moviename"));
-				movie.setScreenwriter(rs.getString("screenwriter"));
-				movie.setActor(rs.getString("actor"));
-				movie.setType(rs.getString("type"));
-				movie.setCountry(rs.getString("country"));
-				movie.setLanguage(rs.getString("language"));
-				movie.setReleasetime(rs.getDate("releasetime"));
-				movie.setDuration(rs.getInt("duration"));
-				movie.setIntroduction(rs.getString("introduction"));
-				movielist.add(movie);
-			}
-			return movielist;
-			
-		} catch(SQLException e) {
-			e.printStackTrace();
-		} finally {
-			C3P0JdbcUtil.release(conn, pstmt, rs);
-		}
-		return null;
-	}
-
 	@Override
 	public void addMovie(Movie m) throws DAOException {
 		// TODO Auto-generated method stub
@@ -81,6 +47,10 @@ public class MovieDAOImpl extends DAOBase implements MovieDAO{
 			pstmt.setInt(8, m.getDuration());
 			pstmt.setString(9, m.getIntroduction());
 			pstmt.executeUpdate();
+			pstmt = conn.prepareStatement("select @@IDENTITY");
+			ResultSet i = pstmt.executeQuery();
+			if(i.next())
+				System.out.println(i.getInt(1));
 			
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -204,20 +174,20 @@ public class MovieDAOImpl extends DAOBase implements MovieDAO{
 		}
 		return mList;
 	}
-	
-	public List<Movie> allMovies()
-	{
+
+	@Override
+	public List<Movie> getMovie_byDirector(int directorid) throws DAOException {
+		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		List<Movie> mList = new ArrayList<Movie>();
-		try{
-			conn = C3P0JdbcUtil.getConnection();
-			pstmt = conn.prepareStatement("select * from Movie");
+		List<Movie> movielist = new ArrayList<Movie>();
+		try {
+			conn = getConnection();
+			pstmt = conn.prepareStatement(GET_MOVIE_BYDIRECTOR_SQL);
+			pstmt.setInt(1, directorid);
 			rs = pstmt.executeQuery();
-			
-			while(rs.next())
-			{
+			while(rs.next()) {
 				Movie movie = new Movie();
 				movie.setMovieid(rs.getInt("movieid"));
 				movie.setMoviename(rs.getString("moviename"));
@@ -229,44 +199,16 @@ public class MovieDAOImpl extends DAOBase implements MovieDAO{
 				movie.setReleasetime(rs.getDate("releasetime"));
 				movie.setDuration(rs.getInt("duration"));
 				movie.setIntroduction(rs.getString("introduction"));
-				mList.add(movie);
+				movielist.add(movie);
 			}
-			return mList;
-		}catch(SQLException e){
-			e.printStackTrace();
-		}finally{
-			C3P0JdbcUtil.release(conn, pstmt, null);
-		}
-		return mList;
-	}
-
-	@Override
-	public double getScore(int movieid) throws DAOException {
-		
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		double totalscore = 0;
-		int cnt=0;
-		try{
-			conn = C3P0JdbcUtil.getConnection();
-			pstmt = conn.prepareStatement("select score from Comment where movieid=?");
-			pstmt.setInt(1, movieid);
-			rs = pstmt.executeQuery();
+			return movielist;
 			
-			while(rs.next())
-			{
-				cnt ++;
-				totalscore += rs.getInt("score");
-			}
-			
-		}catch(SQLException e){
+		} catch(SQLException e) {
 			e.printStackTrace();
-		}finally{
-			C3P0JdbcUtil.release(conn, pstmt, null);
+		} finally {
+			C3P0JdbcUtil.release(conn, pstmt, rs);
 		}
-		
-		return totalscore/cnt;
+		return null;
 	}
 
 	@Override
@@ -304,6 +246,8 @@ public class MovieDAOImpl extends DAOBase implements MovieDAO{
 		}
 		return mList;
 	}
+	
+	
 	
 	
 	
