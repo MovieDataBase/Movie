@@ -7,7 +7,7 @@ public class Comment {
 	private int userid;
 	private int movieid;
 	private String text;
-	private Date time;
+	private String time;
 	private int score;
 	
 	public int getCommentid() {
@@ -34,10 +34,10 @@ public class Comment {
 	public void setText(String text) {
 		this.text = text;
 	}
-	public Date getTime() {
+	public String getTime() {
 		return time;
 	}
-	public void setTime(Date time) {
+	public void setTime(String time) {
 		this.time = time;
 	}
 	public int getScore() {
