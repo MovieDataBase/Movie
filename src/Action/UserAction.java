@@ -1,86 +1,95 @@
 package Action;
 import Bean.*;
 import DAO.*;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class UserAction {
 	
-		public void register(User u) throws DAOException {
+	public void register(User u) throws DAOException {
 		UserDAOImpl uImpl = new UserDAOImpl();
 		int id = uImpl.addUser(u);
 		if(id == -1)
-			System.out.println("ç”¨æˆ·åå·²ç»å­˜åœ¨");
+			System.out.println("ÓÃ»§ÃûÒÑ¾­´æÔÚ");
 		else
-			System.out.println("æ³¨å†ŒæˆåŠŸï¼Œç”¨æˆ·ID: " + id);
+			System.out.println("×¢²á³É¹¦£¬ÓÃ»§ID: " + id);
 	}
 	
 	public int login(int id, String password) throws DAOException {
 		UserDAOImpl uImpl = new UserDAOImpl();
 		if(password.equals(uImpl.getUser(id).getPassword())) {
-			System.out.println("ç™»å½•æˆåŠŸ");
+			System.out.println("µÇÂ¼³É¹¦");
 			return id;
 		}
 		else
-			System.out.println("å¯†ç é”™è¯¯ï¼Œç™»å½•å¤±è´¥");
+			System.out.println("ÃÜÂë´íÎó£¬µÇÂ¼Ê§°Ü");
 		return -1;
 	}
 	
 	public void like_comment(int userid, int commentid) throws DAOException {
 		UserDAOImpl uImpl = new UserDAOImpl();
-		uImpl.likeComment(userid, commentid);
-		System.out.println("ç‚¹èµæˆåŠŸ");
+		if(uImpl.likeComment(userid, commentid) == true)
+			System.out.println("µãÔŞ³É¹¦");
+		else
+			System.out.println("ÒÑµãÔŞ¹ı");
 	}
 	
-	// æµè§ˆç”µå½±ä¿¡æ¯
+	// ä¯ÀÀµçÓ°ĞÅÏ¢
 	public void Browse(int userid, int movieid) throws DAOException {
 		
 		MovieDAOImpl movieimpl = new MovieDAOImpl();
 		DirectorDAOImpl directorimpl = new DirectorDAOImpl();
-		BrouseDAOImpl browseimpl = new BrouseDAOImpl();
+		BrowseDAOImpl browseimpl = new BrowseDAOImpl();
+		CommentDAOImpl commentimpl = new CommentDAOImpl();
 		
-		// è·å–ç”µå½±ä¿¡æ¯å’Œå¯¼æ¼”
+		// »ñÈ¡µçÓ°ĞÅÏ¢¡¢µ¼ÑİºÍÆÀÂÛÊı
 		Movie movie = movieimpl.getMovie(movieid);
 		List<Director> director = directorimpl.getDirector_byMovie(movieid);
 		
-		// æ˜¾ç¤ºç”µå½±ä¿¡æ¯	
-		System.out.println("ç”µå½±åï¼š" + movie.getMoviename());
-		System.out.print("å¯¼æ¼”ï¼š");
+		// ÏÔÊ¾µçÓ°ĞÅÏ¢	
+		System.out.println("µçÓ°Ãû£º" + movie.getMoviename());
+		System.out.print("µ¼Ñİ£º");
 		for(int i = 0 ; i < director.size() ; i++) {
-			if(i != 0) System.out.print("ã€");
+			if(i != 0) System.out.print("¡¢");
 		    System.out.print(director.get(i).getName());
 		}
 		System.out.println();
-		System.out.println("ç¼–å‰§ï¼š" + movie.getScreenwriter());
-		System.out.println("ä¸»æ¼”ï¼š" + movie.getActor());
-		System.out.println("ç±»å‹ï¼š" + movie.getType());
-		System.out.println("åˆ¶ç‰‡å›½å®¶/åœ°åŒºï¼š" + movie.getCountry());
-		System.out.println("è¯­è¨€ï¼š" + movie.getLanguage());
-		System.out.println("ä¸Šæ˜ æ—¥æœŸï¼š" + movie.getReleasetime());
-		System.out.println("ç‰‡é•¿ï¼š" + movie.getDuration() + "åˆ†é’Ÿ");
-		System.out.println("å‰§æƒ…ç®€ä»‹ï¼š" + movie.getIntroduction());
+		System.out.println("±à¾ç£º" + movie.getScreenwriter());
+		System.out.println("Ö÷Ñİ£º" + movie.getActor());
+		System.out.println("ÀàĞÍ£º" + movie.getType());
+		System.out.println("ÖÆÆ¬¹ú¼Ò/µØÇø£º" + movie.getCountry());
+		System.out.println("ÓïÑÔ£º" + movie.getLanguage());		
+		System.out.println("ÉÏÓ³ÈÕÆÚ£º" + movie.getReleasetime());
+		System.out.println("Æ¬³¤£º" + movie.getDuration() + "·ÖÖÓ");
+		System.out.println("ÆÀÂÛÊı£º" + commentimpl.Search(movieid).size());
+		System.out.println("¾çÇé¼ò½é£º\n       " + movie.getIntroduction());
+		System.out.println();
 		
-		// æ·»åŠ æµè§ˆè®°å½•
-		Brouse browse = new Brouse();
+		// Ìí¼Óä¯ÀÀ¼ÇÂ¼
+		Browse browse = new Browse();
 		browse.setMovieid(movieid);
 		browse.setUserid(userid);
 		
-		browseimpl.addBrouse(browse);
+		browseimpl.addbrowse(browse);
 		
 	}
 	
-	// æµè§ˆå†å²
+	// ä¯ÀÀÀúÊ·
 	public void BrowseList(int userid) throws DAOException {
 		
-		BrouseDAOImpl browseimpl = new BrouseDAOImpl();
+		BrowseDAOImpl browseimpl = new BrowseDAOImpl();
 		MovieDAOImpl movieimpl = new MovieDAOImpl();
 		UserDAOImpl userimpl = new UserDAOImpl();
 		
-		// æ˜¾ç¤º
-		System.out.println(userimpl.getUser(userid).getUsername() + " çš„æµè§ˆè®°å½•ï¼š");
-		List<Brouse> browse = browseimpl.Search(userid);
-		for(int i = 0; i < browse.size(); i++) {
-			System.out.println("æµè§ˆç”µå½±ï¼š" + movieimpl.getMovie(browse.get(i).getMovieid()).getMoviename() + "    æµè§ˆæ—¶é—´ï¼š" + browse.get(i).getBrousetime());
-		}
+		// ÏÔÊ¾
+		System.out.println(userimpl.getUser(userid).getUsername() + " µÄä¯ÀÀ¼ÇÂ¼£º");
+		List<Browse> browse = browseimpl.Search(userid);
 		
+		for(int i = browse.size() - 1; i >= 0; i--) {
+			System.out.println("ä¯ÀÀµçÓ°£º" + movieimpl.getMovie(browse.get(i).getMovieid()).getMoviename() + "\tä¯ÀÀÊ±¼ä£º" + browse.get(i).getbrowsetime());
+		}
+		System.out.println();
 	}
+	
 }

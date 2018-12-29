@@ -1,6 +1,14 @@
 package Action;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 import Bean.*;
 import DAO.*;
@@ -12,9 +20,9 @@ public class MovieAction {
 		List<Movie> mlist;
 		mlist = mImpl.getMovie_byDirector(directorid);
 		if(mlist.size() == 0)
-			System.out.println("æ— è¯¥å¯¼æ¼”æŒ‡å¯¼çš„ç”µå½±");
+			System.out.println("ÎŞ¸Ãµ¼ÑİÖ¸µ¼µÄµçÓ°");
 		else {
-			System.out.println("æŒ‡å¯¼è¿‡çš„ç”µå½±åŒ…æ‹¬: ");
+			System.out.println("Ö¸µ¼¹ıµÄµçÓ°°üÀ¨: ");
 			Iterator<Movie> it = mlist.iterator();
 			while(it.hasNext()) {
 				System.out.println(it.next().getMoviename());
@@ -27,15 +35,148 @@ public class MovieAction {
 		List<Movie> mlist;
 		mlist = mImpl.Search_byType(type);
 		if(mlist.size() == 0)
-			System.out.println("æ— è¯¥ç±»å‹çš„ç”µå½±");
+			System.out.println("ÎŞ¸ÃÀàĞÍµÄµçÓ°");
 		else {
-			System.out.println(type + "ç±»ç”µå½±åŒ…æ‹¬: ");
-			Iterator<Movie> it = mlist.iterator();
-			while(it.hasNext()) {
-				System.out.print("ç”µå½±å: " + it.next().getMoviename() + " ");
-				System.out.println("ç±»åˆ«: " + it.next().getType());
+			System.out.println(type + "ÀàµçÓ°°üÀ¨: ");
+			for(int i = 0; i < mlist.size(); i++) {
+				System.out.print("µçÓ°Ãû: " + mlist.get(i).getMoviename() + " ");
+				System.out.println("Àà±ğ: " + mlist.get(i).getType());
 			}
 		}
+	}
+	
+	// ²é¿´ÆÀÂÛ
+	public void comment_show(int movieid) throws DAOException {
+		
+		CommentDAOImpl commentimpl = new CommentDAOImpl();
+		MovieDAOImpl movieimpl = new MovieDAOImpl();
+		UserDAOImpl userimpl = new UserDAOImpl();
+		List<Comment> cList = commentimpl.Search(movieid);
+		
+		System.out.println("µçÓ°Ãû£º\t" + movieimpl.getMovie(movieid).getMoviename());
+		System.out.println("ËùÓĞÆÀÂÛ£º");
+		for(int i = cList.size() - 1; i >= 0; i--) {
+			System.out.println("ÆÀÂÛÈË£º" + userimpl.getUser(cList.get(i).getUserid()).getUsername());
+			System.out.println("ÆÀÂÛÊ±¼ä£º" + cList.get(i).getTime());
+			System.out.println("´ò·Ö£º" + cList.get(i).getScore());
+			System.out.println("µãÔŞÊı£º" + commentimpl.likeComment(cList.get(i).getCommentid()));
+			System.out.println("ÆÀÂÛÄÚÈİ£º");
+			System.out.println(cList.get(i).getText());
+		}
+		System.out.println();
+	}
+	
+	// Ìí¼ÓÆÀÂÛ
+	public void comment(int userid, int movieid, String text, int score) throws DAOException {
+		
+		CommentDAOImpl commentimpl = new CommentDAOImpl();
+		
+		Comment c = new Comment();
+		c.setUserid(userid);
+		c.setMovieid(movieid);
+		c.setText(text);
+		c.setScore(score);
+		
+		commentimpl.addComment(c);
+	}
+	
+	// É¾³ıÆÀÂÛ
+	public void comment_delete(int userid, int commentid) throws DAOException {
+		
+		CommentDAOImpl commentimpl = new CommentDAOImpl();
+		
+		Comment c = commentimpl.getComment(commentid);
+		if(c.getUserid() != userid) {
+			System.out.println("É¾³ıÊ§°Ü£¬ÄúÃ»ÓĞÈ¨ÏŞÉ¾³ı±ğÈËµÄÆÀÂÛ");
+			return;
+		}
+		
+		commentimpl.deleteComment(commentid);
+		System.out.println("É¾³ı³É¹¦");
+	}
+	
+	// ĞŞ¸ÄÆÀÂÛ
+	public void comment_update(int userid, int commentid, String text, int score) throws DAOException {
+		
+		CommentDAOImpl commentimpl = new CommentDAOImpl();
+		
+		Comment c = commentimpl.getComment(commentid);
+		if(c.getUserid() != userid) {
+			System.out.println("ĞŞ¸ÄÊ§°Ü£¬ÄúÃ»ÓĞÈ¨ÏŞĞŞ¸Ä±ğÈËµÄÆÀÂÛ");
+			return;
+		}
+		
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String date = df.format(new Date());
+		c.setTime(date);
+		c.setText(text);
+		c.setScore(score);
+		
+		commentimpl.updateComment(c);
+		System.out.println("ĞŞ¸Ä³É¹¦");
+	}
+		
+	// ÆÀÂÛ°´µãÔŞÅÅĞò
+	public void comment_sort(int movieid) throws DAOException {
+		
+		CommentDAOImpl commentimpl = new CommentDAOImpl();
+		MovieDAOImpl movieimpl = new MovieDAOImpl();
+		UserDAOImpl userimpl = new UserDAOImpl();
+		
+		// ÅÅĞò
+		TreeSet<CommentGrade> col=new TreeSet<CommentGrade>();
+		List<Comment> cList = commentimpl.Search(movieid);
+		Iterator<Comment> it = cList.iterator();
+		while(it.hasNext())
+		{
+			Comment comment = (Comment)it.next();
+			col.add(new CommentGrade( comment,commentimpl.likeComment(comment.getCommentid())));
+		}
+		
+		// Êä³ö
+		System.out.println("µçÓ°Ãû£º\t" + movieimpl.getMovie(movieid).getMoviename());
+		System.out.println("ËùÓĞÆÀÂÛ£¨°´µãÔŞÊı£©£º");
+		Iterator<CommentGrade> itr = col.iterator();
+		
+		while(itr.hasNext()) {
+			CommentGrade comment = (CommentGrade)itr.next();
+			
+			System.out.println("ÆÀÂÛÈË£º" + userimpl.getUser(comment.getC().getUserid()).getUsername());
+			System.out.println("ÆÀÂÛÊ±¼ä£º" + comment.getC().getTime());
+			System.out.println("´ò·Ö£º" + comment.getC().getScore());
+			System.out.println("µãÔŞÊı£º" + commentimpl.likeComment(comment.getC().getCommentid()));
+			System.out.println("ÆÀÂÛÄÚÈİ£º");
+			System.out.println(comment.getC().getText());
+		}
+		System.out.println();
+		
+	}
+}
+
+class CommentGrade implements Comparable {
+	
+	Comment c;
+	Integer cnt;
+	
+	public CommentGrade(Comment c, Integer cnt)
+	{
+		this.c = c;
+		this.cnt = cnt;
+	}
+	
+	public Comment getC() {
+		return c;
+	}
+	public Integer getCnt() {
+		return cnt;
+	}
+
+	@Override
+	public int compareTo(Object b) {
+		
+		CommentGrade  cg = (CommentGrade)b;
+		if(cg.cnt >= this.cnt) return 1;
+		return cg.getCnt().compareTo(this.cnt);
 	}
 	
 }
