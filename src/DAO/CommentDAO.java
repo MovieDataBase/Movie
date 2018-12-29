@@ -9,5 +9,6 @@ public interface CommentDAO {
 	public Comment getComment(int commentid) throws DAOException;
 	public void deleteComment(int commentid) throws DAOException;
 	public List<Comment> Search(int commentid) throws DAOException;
+	public int likeComment(int commentid) throws DAOException;
 	
 }
