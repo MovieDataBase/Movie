@@ -1,20 +1,116 @@
 package Action;
+
+
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
+import java.util.Formatter;
 
 import Bean.*;
 import DAO.*;
 
+class CommentGrade implements Comparable {
+	
+	Comment c;
+	Integer cnt;
+	
+	public CommentGrade(Comment c, Integer cnt)
+	{
+		this.c = c;
+		this.cnt = cnt;
+	}
+	
+	public Comment getC() {
+		return c;
+	}
+	public Integer getCnt() {
+		return cnt;
+	}
+
+	@Override
+	public int compareTo(Object b) {
+		
+		CommentGrade  cg = (CommentGrade)b;
+		if(cg.cnt >= this.cnt) return 1;
+		return cg.getCnt().compareTo(this.cnt);
+	}
+	
+}
+class Composite implements Comparable {
+	Movie m;
+	double b;
+	public Composite(Movie m,Double b)
+	{
+		
+		if(Double.isNaN(b))
+			this.b = -1;
+		else
+			this.b = b;
+		this.m = m;
+	}
+	public Movie getM() {
+		return m;
+	}
+	public void setM(Movie m) {
+		this.m = m;
+	}
+	public double getB() {
+		return b;
+	}
+	public void setB(double b) {
+		this.b = b;
+	}
+	
+	public int compareTo(Object b)
+	{ 
+	     Composite com=(Composite)b;
+	     if(com.getB()-this.getB()>=0)
+	    	 return 1;
+	     else 
+	    	 return -1;
+	     
+	 }
+	
+}
 
 public class MovieAction {
+	
+	public void showMovieByScore() throws DAOException{
+		MovieDAOImpl mImpl = new MovieDAOImpl();
+		List<Movie> mList = mImpl.allMovies();
+		Iterator<Movie> it = mList.iterator();
+		TreeSet<Composite> col=new TreeSet<Composite>();
+		while(it.hasNext())
+		{
+			Movie m = (Movie)it.next();
+			col.add(new Composite(m,mImpl.getScore(m.getMovieid())));
+		}
+		Formatter formatter = new Formatter(System.out);
+		
+		
+	     Iterator<Composite> iter=col.iterator();
+    	 System.out.println("电影名称"+"\t\t\t"+"评分");
+	     while(iter.hasNext())
+	     { 
+	    	 Composite com = (Composite)iter.next();
+
+	    	 if(com.getB()==-1)
+	    	 {
+	    		 System.out.println(com.getM().getMoviename()+"\t\t\t"+"暂无评分");
+//	    		 formatter.format("%-100s %5s\n", com.getM().getMoviename(),"暂无评分");
+	    	 }    		 
+	    	 else
+	    	 {
+	    		 System.out.println(com.getM().getMoviename()+"\t\t\t"+com.getB());
+//	    		 Double db = new Double(com.getB());
+//	    		 formatter.format("%-100s %5d\n", com.getM().getMoviename(),com.getB());
+	    	 }
+	    		 
+	     }
+	}
+	
 	public void show_movie_by_director(int directorid) throws DAOException {
 		MovieDAOImpl mImpl = new MovieDAOImpl();
 		List<Movie> mlist;
@@ -77,11 +173,7 @@ public class MovieAction {
 		c.setText(text);
 		c.setScore(score);
 		
-		if(commentimpl.addComment(c) == true)
-			System.out.println("评论成功");
-		else {
-			System.out.println("您不能对同一个电影发表两次评论，可以选择删除或修改原评论");
-		}
+		commentimpl.addComment(c);
 	}
 	
 	// 删除评论
@@ -154,33 +246,6 @@ public class MovieAction {
 		}
 		System.out.println();
 		
-	}
-}
-
-class CommentGrade implements Comparable {
-	
-	Comment c;
-	Integer cnt;
-	
-	public CommentGrade(Comment c, Integer cnt)
-	{
-		this.c = c;
-		this.cnt = cnt;
-	}
-	
-	public Comment getC() {
-		return c;
-	}
-	public Integer getCnt() {
-		return cnt;
-	}
-
-	@Override
-	public int compareTo(Object b) {
-		
-		CommentGrade  cg = (CommentGrade)b;
-		if(cg.cnt >= this.cnt) return 1;
-		return cg.getCnt().compareTo(this.cnt);
 	}
 	
 }
