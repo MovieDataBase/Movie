@@ -38,7 +38,7 @@ public class MovieDAOImpl extends DAOBase implements MovieDAO{
 			conn = getConnection();
 			pstmt = conn.prepareStatement(GET_MOVIE_BYDIRECTOR_SQL);
 			pstmt.setInt(1, directorid);
-			rs = pstmt.executeQuery(GET_MOVIE_BYDIRECTOR_SQL);
+			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				Movie movie = new Movie();
 				movie.setMovieid(rs.getInt("movieid"));
